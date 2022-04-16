@@ -21,7 +21,7 @@ Index.getInitialProps = async () => {
       resolve({
         name: "joky",
       });
-    }, 3000);
+    }, 1000);
   });
   return await fetchData;
 };

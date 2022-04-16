@@ -8,6 +8,22 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = new Koa();
+  const router = new Router();
+
+
+  // 解决路由映射刷新页面404的问题
+  router.get('/detail/:id', async (ctx) => {
+    const id = ctx.params.id;
+    await handle(ctx.req, ctx.res, {
+      pathname: '/detail',
+      query: {
+        id
+      }
+    })
+    ctx.response = false;
+  })
+
+  server.use(router.routes());
 
   server.use(async (ctx, next) => {
     await handle(ctx.req, ctx.res);

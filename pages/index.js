@@ -16,7 +16,7 @@ class Index extends React.Component {
     return (
       <div>
         <p>Index</p>
-        <Link href="/detail?a=1" titale="aaaa">
+        <Link href="/detail?id=1" as="/detail/1" title="aaaa">
           <Button>使用Link跳转到Detail页面</Button>
         </Link>
 

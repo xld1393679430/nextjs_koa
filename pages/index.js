@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import Link from "next/link";
+import { Button } from "antd";
 import { withRouter } from "next/router";
 
 class Index extends React.Component {
@@ -6,7 +7,7 @@ class Index extends React.Component {
     return (
       <div>
         <p>Index</p>
-        <Link href='/demo'>to view demo</Link>
+        <Link href="/demo">to view demo</Link>
       </div>
     );
   }

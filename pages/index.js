@@ -1,7 +1,11 @@
+import { Button } from 'antd'
 class Index extends React.Component{
     render(){
         return (
-            <div>Index</div>
+            <div>
+                <title>Index</title>
+                <Button>按钮</Button>
+            </div>
         )
     }
 }

@@ -30,6 +30,12 @@ class Index extends React.Component {
         <Link href="/demo/route-events">
           <Button>查看Router生命周期函数</Button>
         </Link>
+
+        <br />
+        <Link href="/demo/get-initial-props">
+          <Button>GetInitialProps介绍</Button>
+        </Link>
+        
       </div>
     );
   }

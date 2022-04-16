@@ -12,10 +12,10 @@ app.prepare().then(() => {
 
 
   // 解决路由映射刷新页面404的问题
-  router.get('/detail/:id', async (ctx) => {
+  router.get('/demo/detail/:id', async (ctx) => {
     const id = ctx.params.id;
     await handle(ctx.req, ctx.res, {
-      pathname: '/detail',
+      pathname: '/demo/detail',
       query: {
         id
       }

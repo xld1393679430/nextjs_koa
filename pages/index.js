@@ -7,7 +7,7 @@ class Index extends React.Component {
     return (
       <div>
         <p>Index</p>
-        <Link href="/demo">to view demo</Link>
+        <Link href="/next-demo">to view next-demo</Link>
       </div>
     );
   }

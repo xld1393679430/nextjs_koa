@@ -5,7 +5,7 @@ class Index extends React.Component {
   handleRouterNavigation = () => {
     // Router.push("/detail");
     Router.push({
-      pathname: "/demo/detail",
+      pathname: "/next-demo/detail",
       query: {
         id: 2,
       },
@@ -16,7 +16,7 @@ class Index extends React.Component {
     return (
       <div>
         <p>Index</p>
-        <Link href="/demo/detail?id=1" as="/demo/detail/1">
+        <Link href="/next-demo/detail?id=1" as="/next-demo/detail/1">
           <Button>使用Link跳转到Detail页面</Button>
         </Link>
 
@@ -27,22 +27,22 @@ class Index extends React.Component {
 
         <br />
 
-        <Link href="/demo/route-events">
+        <Link href="/next-demo/route-events">
           <Button>查看Router生命周期函数</Button>
         </Link>
 
         <br />
-        <Link href="/demo/get-initial-props">
+        <Link href="/next-demo/get-initial-props">
           <Button>GetInitialProps介绍</Button>
         </Link>
 
         <br />
-        <Link href="/demo/lazy-module">
+        <Link href="/next-demo/lazy-module">
           <Button>异步加载模块</Button>
         </Link>
 
         <br />
-        <Link href="/demo/lazy-compoent">
+        <Link href="/next-demo/lazy-compoent">
           <Button>异步加载组件</Button>
         </Link>
       </div>

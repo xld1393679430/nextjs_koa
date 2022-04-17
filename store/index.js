@@ -6,18 +6,18 @@ const initialCounterState = {
   count: 1,
 };
 
-const counterReducer = (state = initialCounterState, action) => {
-  console.log(action, "counterReducer");
-  switch (action.type) {
+const counterReducer = (state = initialCounterState, {type, payload}) => {
+  const count = payload && payload.count || 100
+  switch (type) {
     case "Add":
       return {
         ...state,
-        count: state.count + action.payload.count,
+        count: state.count + count,
       };
     case "Del":
       return {
         ...state,
-        count: state.count - action.payload.count,
+        count: state.count - count,
       };
     default:
       return state;
@@ -28,30 +28,18 @@ const rootReducer = combineReducers({
   counter: counterReducer,
 });
 
-const store = createStore(
-  rootReducer,
-  {
-    counter: initialCounterState,
-  },
-  composeWithDevTools(applyMiddleware(reduxThunk))
-);
+export default function initializeStore(state) {
+  const store = createStore(
+    rootReducer,
+    Object.assign(
+      {},
+      {
+        counter: initialCounterState,
+      },
+      state
+    ),
+    composeWithDevTools(applyMiddleware(reduxThunk))
+  );
 
-function asyncAdd(count = 10) {
-  return (dispatch) => {
-    setTimeout(() => {
-      dispatch({
-        type: "Add",
-        payload: {
-          count,
-        },
-      });
-    }, 500);
-  };
+  return store;
 }
-
-store.subscribe(() => {
-  console.log("---store changed----", store.getState());
-});
-store.dispatch(asyncAdd());
-
-export default store;

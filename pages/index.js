@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { withRouter } from "next/router";
-
 class Index extends React.Component {
   render() {
     return (
@@ -22,4 +20,4 @@ class Index extends React.Component {
   }
 }
 
-export default withRouter(Index);
+export default Index;

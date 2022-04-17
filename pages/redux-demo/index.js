@@ -32,4 +32,11 @@ class Index extends React.Component {
   }
 }
 
+Index.getInitialProps = async ({reduxStore}) => {
+  reduxStore.dispatch({
+    type: 'Add'
+  })
+  return {};
+};
+
 export default connect(mapStateToProps, matDispatchToProps)(Index);

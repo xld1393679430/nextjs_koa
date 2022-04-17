@@ -3,7 +3,7 @@ import Link from "next/link";
 import Router from "next/router";
 class Index extends React.Component {
   handleRouterNavigation = () => {
-    // Router.push("/detail");
+    // Router.push("/next-demo/detail");
     Router.push({
       pathname: "/next-demo/detail",
       query: {
@@ -15,7 +15,7 @@ class Index extends React.Component {
   render() {
     return (
       <div>
-        <p>Index</p>
+        <p>Next Demo</p>
         <Link href="/next-demo/detail?id=1" as="/next-demo/detail/1">
           <Button>使用Link跳转到Detail页面</Button>
         </Link>

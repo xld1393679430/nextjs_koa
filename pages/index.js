@@ -8,6 +8,8 @@ class Index extends React.Component {
       <div>
         <p>Index</p>
         <Link href="/next-demo">to view next-demo</Link>
+        <hr />
+        <Link href="/hooks-demo">to view hooks-demo</Link>
       </div>
     );
   }

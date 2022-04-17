@@ -6,10 +6,10 @@ import withRedux from "../lib/with-redux";
 class MyApp extends App {
   static async getInitialProps(ctx) {
     const { Component } = ctx;
-    const initialProps = Component.getInitialProps;
     let pageProps;
-    if (initialProps) {
-      pageProps = await initialProps(ctx);
+    
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
     }
 
     return {

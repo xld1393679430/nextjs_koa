@@ -1,11 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
-function withLog(Comp) {
-  return (props) => {
-    console.log("-----withLog:", props);
-    return <Comp {...props} />;
-  };
-}
 
 // Document只有在服务端渲染才会被调用
 // 用来修改服务端渲染的文档内容

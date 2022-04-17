@@ -5,10 +5,10 @@ class Index extends React.Component {
   handleRouterNavigation = () => {
     // Router.push("/detail");
     Router.push({
-        pathname: "/demo/detail",
-        query: {
-            id: 2
-        }
+      pathname: "/demo/detail",
+      query: {
+        id: 2,
+      },
     });
   };
 
@@ -35,7 +35,16 @@ class Index extends React.Component {
         <Link href="/demo/get-initial-props">
           <Button>GetInitialProps介绍</Button>
         </Link>
-        
+
+        <br />
+        <Link href="/demo/lazy-module">
+          <Button>异步加载模块</Button>
+        </Link>
+
+        <br />
+        <Link href="/demo/lazy-compoent">
+          <Button>异步加载组件</Button>
+        </Link>
       </div>
     );
   }

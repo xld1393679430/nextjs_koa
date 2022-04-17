@@ -4,6 +4,7 @@ const next = require("next");
 const session = require("koa-session");
 const Redis = require("ioredis");
 const RedisSessionStore = require("./server/session-store");
+const auth = require("./server/auth");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -22,6 +23,9 @@ app.prepare().then(() => {
 
   server.use(session(SESSION_CONFIG, server));
 
+  // 配置处理GitHub oauth登录
+  auth(server);
+
   // 解决路由映射刷新页面404的问题
   router.get("/next-demo/detail/:id", async (ctx) => {
     const id = ctx.params.id;
@@ -34,19 +38,15 @@ app.prepare().then(() => {
     ctx.response = false;
   });
 
-  // 增加session
-  router.get("/set/user", async (ctx) => {
-    ctx.session.user = {
-      name: "xld",
-      age: 22,
-    };
-    ctx.body = "set session success";
-  });
-
-  // 删除session
-  router.get("/delete/user", async (ctx) => {
-    ctx.session = null;
-    ctx.body = "delete session success";
+  router.get("/api/user/info", async (ctx) => {
+    const user = ctx.session.userInfo;
+    if (!user) {
+      ctx.status = 401;
+      ctx.body = "Need Login";
+    } else {
+      ctx.body = user;
+      ctx.set("Content-Type", "application/json");
+    }
   });
 
   server.use(router.routes());

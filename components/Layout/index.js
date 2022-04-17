@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Layout, Icon, Input, Avatar } from "antd";
+import Container from "../Container";
 
 const { Header, Content, Footer } = Layout;
 const githubIconStyle = {
@@ -21,7 +22,7 @@ const Index = ({ children }) => {
   return (
     <Layout>
       <Header>
-        <div className="header-inner">
+        <Container renderer={<div className="header-inner" />}>
           <div className="header-left">
             <div className="logo">
               <Icon type="github" style={githubIconStyle}></Icon>
@@ -40,14 +41,16 @@ const Index = ({ children }) => {
               <Avatar size={40} icon="user" />
             </div>
           </div>
-        </div>
+        </Container>
       </Header>
-      <Content>{children}</Content>
+      <Content>
+        <Container>{children}</Container>
+      </Content>
       <Footer style={{ textAlign: "center" }}>
-        <span>
+        <Container>
           Develop by xld @{" "}
           <a href="mailto:xld139369430@outloock">xld139369430@outloock</a>{" "}
-        </span>
+        </Container>
       </Footer>
       <style jsx>{`
         .header-inner {
@@ -66,6 +69,10 @@ const Index = ({ children }) => {
         }
         .ant-layout {
           height: 100%;
+        }
+        .ant-layout-header {
+          padding-left: 0;
+          padding-right: 0;
         }
       `}</style>
     </Layout>

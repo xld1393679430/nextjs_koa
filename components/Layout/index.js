@@ -1,6 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { Layout, Icon, Input, Avatar } from "antd";
+import { Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from "antd";
+import getConfig from "next/config";
+import { connect } from "react-redux";
 import Container from "../Container";
+import { logout } from "../../store";
+
+const { publicRuntimeConfig } = getConfig();
 
 const { Header, Content, Footer } = Layout;
 const githubIconStyle = {
@@ -10,7 +15,7 @@ const githubIconStyle = {
   marginRight: 20,
 };
 
-const Index = ({ children }) => {
+const Index = ({ children, user, logout }) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleChangeSearch = useCallback((e) => {
@@ -18,6 +23,10 @@ const Index = ({ children }) => {
   }, []);
 
   const handleSubmit = useCallback(() => {}, []);
+
+  const handleLogout = useCallback(async () => {
+    logout()
+  }, []);
 
   return (
     <Layout>
@@ -38,7 +47,23 @@ const Index = ({ children }) => {
           </div>
           <div className="header-right">
             <div className="user">
-              <Avatar size={40} icon="user" />
+              {user && user.id ? (
+                <Dropdown
+                  overlay={
+                    <Menu>
+                      <Menu.Item onClick={handleLogout}>登出</Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <Avatar size={40} src={user.avatar_url} />
+                </Dropdown>
+              ) : (
+                <Tooltip title="点击登录">
+                  <a href={publicRuntimeConfig.OAUTH_URL}>
+                    <Avatar size={40} icon="user" />
+                  </a>
+                </Tooltip>
+              )}
             </div>
           </div>
         </Container>
@@ -79,4 +104,15 @@ const Index = ({ children }) => {
   );
 };
 
-export default Index;
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => dispatch(logout()),
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

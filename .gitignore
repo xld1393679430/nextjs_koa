@@ -3,5 +3,6 @@ node_modules/
 
 .next
 .next/
+dest/
 
 .DS_Store

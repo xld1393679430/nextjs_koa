@@ -5,7 +5,7 @@ import axios from "axios";
 
 const { publicRuntimeConfig } = getConfig();
 
-const Index = () => {
+const IndexDemo = () => {
   useEffect(() => {
     axios.get('/api/user/info').then(res => {
       console.log(res, '/api/user/info---res')
@@ -30,5 +30,11 @@ const Index = () => {
     </>
   );
 };
+
+const Index = () => {
+  return (
+    <div>Index</div>
+  )
+}
 
 export default Index;

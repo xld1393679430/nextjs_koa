@@ -6,8 +6,6 @@ async function initRedis() {
   });
 
   const keys = await redis.keys("*");
-
-  console.log(keys);
 }
 
 initRedis();

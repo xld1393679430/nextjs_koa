@@ -2,7 +2,6 @@ import { Button } from "antd";
 import Link from "next/link";
 class Index extends React.Component {
 
-
   render() {
     return (
       <div>
@@ -10,8 +9,6 @@ class Index extends React.Component {
         <Link href="/hooks-demo/use-reducer" >
           <Button>useReducer</Button>
         </Link>
-
-        
       </div>
     );
   }

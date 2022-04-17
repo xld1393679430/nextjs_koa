@@ -1,11 +1,8 @@
-import { Button } from "antd";
 import { withRouter } from "next/router";
 
 class Index extends React.Component {
   render() {
     const { name } = this.props;
-
-    console.log(this.props, 333);
     return (
       <div>
         <p>GetInitialProps</p>

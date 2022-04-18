@@ -2,9 +2,17 @@ import Link from "next/link";
 import getConfig from "next/config";
 import axios from "axios";
 import { useEffect } from "react";
+import { Button, Icon, Tabs } from "antd";
+import { connect } from "react-redux";
+import { withRouter } from "next/router";
+import Repo from "../components/Repo";
 const api = require("../lib/api");
+const { isServer } = require("../utils");
 
 const { publicRuntimeConfig } = getConfig();
+
+// 服务端渲染不能缓存cachedUserRepos & cachedUserStarred
+let cachedUserRepos, cachedUserStarred;
 
 const IndexDemo = () => {
   useEffect(() => {
@@ -32,35 +40,150 @@ const IndexDemo = () => {
   );
 };
 
-const Index = ({ data }) => {
+const Index = ({ userRepos, userStarred, user, router }) => {
+  const tabKey = router.query.key || "1";
+  console.log(userRepos, userStarred, user, "Index---");
+
+  const handleCahngeTab = (activeKey) => {
+    router.replace(`/?key=${activeKey}`);
+  };
+
   useEffect(() => {
-    axios.post("/github/test", {
-      a: 1,
-      b: 2,
-    });
+    if (!isServer) {
+      cachedUserRepos = userRepos;
+      cachedUserStarred = userStarred;
+    }
   }, []);
 
+  if (!user || !user.id) {
+    return (
+      <div className="root">
+        <p>亲，你还没有登录， 请去登录吧</p>
+        <Button type="primary" href={publicRuntimeConfig.OAUTH_URL}>
+          点击登录
+        </Button>
+        <style jsx>{`
+          .root {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <p>Index</p>
-      <Link href="/detail">
-        <a>去Detail页面</a>
-      </Link>
+    <div className="root">
+      <div className="user-info">
+        <img src={user.avatar_url} alt="user avatar" className="avarat" />
+        <span className="login">{user.login}</span>
+        <span className="name">{user.name}</span>
+        <span className="bio">{user.bio}</span>
+        <p className="mail">
+          <Icon type="mail" style={{ marginRight: 8 }}></Icon>
+          <a href={`mailto:${user.email}`}>{user.email}</a>
+        </p>
+      </div>
+      <div className="user-repos">
+        <Tabs
+          defaultActiveKey={tabKey}
+          animated={false}
+          onChange={handleCahngeTab}
+        >
+          <Tabs.TabPane tab="你的仓库" key="1">
+            {userRepos.map((repo) => (
+              <Repo key={repo.id} repo={repo} />
+            ))}
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="你关注的仓库" key="2">
+            {userStarred.map((repo) => (
+              <Repo key={repo.id} repo={repo} />
+            ))}
+          </Tabs.TabPane>
+        </Tabs>
+      </div>
+      <style jsx>{`
+        .root {
+          display: flex;
+          align-items: flex-start;
+          padding: 20px 0;
+        }
+        .user-info {
+          width: 200px;
+          margin-right: 40px;
+          display: flex;
+          flex-shrink: 0;
+          flex-direction: column;
+        }
+        .login {
+          font-weight: 800;
+          font-size: 20px;
+          margin-top: 20px;
+        }
+        .name {
+          font-szie: 16;
+          color: #777;
+        }
+        .bio {
+          margin-top: 20px;
+          color: #333;
+        }
+        .avatar {
+          width: 100%;
+          border-radius: 5px;
+        }
+        .user-repos {
+          flex-grow: 1;
+        }
+      `}</style>
     </div>
   );
 };
 
-Index.getInitialProps = async ({ ctx }) => {
-  let result = await api.request(
+Index.getInitialProps = async ({ ctx, reduxStore }) => {
+  const user = reduxStore.getState().user;
+  if (!user || !user.id) {
+    return {};
+  }
+
+  if (!isServer) {
+    if (cachedUserRepos && cachedUserStarred) {
+      return {
+        userRepos: cachedUserRepos,
+        userStarred: cachedUserStarred,
+      };
+    }
+  }
+
+  let userReposResq = await api.request(
     {
-      url: "/search/repositories?q=react",
+      url: "/user/repos",
     },
     ctx.req,
     ctx.res
   );
+
+  let userStarredResq = await api.request(
+    {
+      url: "/user/starred",
+    },
+    ctx.req,
+    ctx.res
+  );
+
   return {
-    data: result.data,
+    userRepos: userReposResq.data,
+    userStarred: userStarredResq.data,
   };
 };
 
-export default Index;
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(Index));

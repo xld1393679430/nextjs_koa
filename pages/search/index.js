@@ -1,11 +1,12 @@
-import { memo } from "react";
+import { memo, isValidElement } from "react";
 import { withRouter } from "next/router";
 import queryString from "query-string";
-import { useEffect } from "react";
-import { Row, Col, List } from "antd";
+import { Row, Col, List, Pagination } from "antd";
 import Link from "next/link";
+import Repo from "../../components/Repo";
 const api = require("../../lib/api");
 
+function noop() {}
 const LANGUAGES = ["Javascript", "HTML", "CSS", "TypeScript", "Java", "Rust"];
 const SORT_TYPES = [
   {
@@ -36,21 +37,17 @@ const selectedStyle = {
   borderLeft: "2px solid #e36209",
   fontWight: 100,
 };
-const FilterLink = memo(({ name, query, lang, sort, order }) => {
+const FilterLink = memo(({ name, query, lang, sort, order, page }) => {
   const queryObj = {
-    query: query || undefined,
-    lang: lang || undefined,
-    sort: sort || undefined,
-    order: order || undefined,
-    page: 1,
+    query,
+    lang,
+    sort,
+    order,
+    page,
   };
   const queryStr = queryString.stringify(queryObj);
   const href = `/search?${queryStr}`;
-  return (
-    <Link href={href}>
-      <a>{name}</a>
-    </Link>
-  );
+  return <Link href={href}>{isValidElement(name) ? name : <a>{name}</a>}</Link>;
 });
 
 /**
@@ -61,7 +58,8 @@ const FilterLink = memo(({ name, query, lang, sort, order }) => {
  */
 const Index = ({ router, repos }) => {
   const { ...querys } = router.query;
-  const { lang, sort, order } = router.query;
+  const { lang, sort, order, page } = router.query;
+  console.log(repos.total_count, "----repos");
 
   return (
     <div className="root">
@@ -79,7 +77,7 @@ const Index = ({ router, repos }) => {
                   {selected ? (
                     <span>{item}</span>
                   ) : (
-                    <FilterLink {...querys} lang={item} name={item} />
+                    <FilterLink {...querys} lang={item} name={item} page={1} />
                   )}
                 </List.Item>
               );
@@ -115,6 +113,40 @@ const Index = ({ router, repos }) => {
             }}
           />
         </Col>
+        <Col span={18}>
+          <h3 className="repos-title">{repos.total_count} 个仓库</h3>
+          {repos.items.map((repo) => {
+            return <Repo key={repo.id} repo={repo} />;
+          })}
+          <Pagination
+            total={repos.total_count}
+            pageSize={30}
+            current={Number(page) || 1}
+            onChange={noop}
+            itemRender={(page, type, ol) => {
+              let p;
+              let name;
+              if (type === "page") {
+                p = page;
+                name = page;
+              } else if (type === "prev") {
+                p = page - 1;
+                // name = ol;
+              } else if (type === "next") {
+                p = page + 1;
+                // name = ol;
+              } else if (type === "jump-prev") {
+                p = page;
+                name = ol;
+              } else if (type === "jump-next") {
+                p = page;
+                name = ol;
+              }
+
+              return <FilterLink {...querys} page={p} name={name} />;
+            }}
+          />
+        </Col>
       </Row>
       <style jsx>{`
         .root {
@@ -123,6 +155,11 @@ const Index = ({ router, repos }) => {
         .list-header {
           font-weight: 800;
           font-size: 16px;
+        }
+        .repos-title {
+          border-bottom: 1px solid #eee;
+          font-size: 24px;
+          line-height: 50px;
         }
       `}</style>
     </div>
@@ -141,20 +178,25 @@ Index.getInitialProps = async ({ ctx }) => {
 
   const queryObj = {
     q: query,
-    sort: sort,
-    language: lang,
+    sort: sort || undefined,
+    language: lang || undefined,
     order: order || "desc",
-    page: page,
+    page: page || 1,
   };
   const queryStr = queryString.stringify(queryObj);
 
   let result = {
-    data: undefined,
+    data: {},
   };
   try {
-    result = await api.request({
-      url: `/search/repositories?${queryStr}`,
-    });
+    const url = `/search/repositories?${queryStr}`;
+    result = await api.request(
+      {
+        url,
+      },
+      ctx.req,
+      ctx.res
+    );
   } catch (error) {}
 
   return {

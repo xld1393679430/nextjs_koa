@@ -54,7 +54,7 @@ class MyApp extends App {
     return (
       <Container>
         <Provider store={reduxStore}>
-          {loading && <Loading />}
+          {loading ? <Loading /> : null}
           <Layout>
             <Component {...pageProps} />
           </Layout>

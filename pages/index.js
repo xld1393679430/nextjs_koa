@@ -7,9 +7,9 @@ const { publicRuntimeConfig } = getConfig();
 
 const IndexDemo = () => {
   useEffect(() => {
-    axios.get('/api/user/info').then(res => {
-      console.log(res, '/api/user/info---res')
-    })
+    axios.get("/api/user/info").then((res) => {
+      console.log(res, "/api/user/info---res");
+    });
   }, []);
   return (
     <>
@@ -33,8 +33,13 @@ const IndexDemo = () => {
 
 const Index = () => {
   return (
-    <div>Index</div>
-  )
-}
+    <div>
+      <p>Index</p>
+      <Link href="/detail">
+        <a>去Detail页面</a>
+      </Link>
+    </div>
+  );
+};
 
 export default Index;

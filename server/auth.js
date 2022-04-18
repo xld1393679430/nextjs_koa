@@ -37,7 +37,10 @@ module.exports = (server) => {
           },
         });
         ctx.session.userInfo = userInfoResp.data;
-        ctx.redirect("/");
+        // 登录成功后跳转到登录前的页面
+        ctx.redirect(ctx.session.urlBeforeOAuth || "/");
+        // 登录成功后需要重置urlBeforeOAuth
+        ctx.session.urlBeforeOAuth = ""
       } else {
         ctx.body = `request token fail ${result.message}`;
         return;
@@ -52,6 +55,17 @@ module.exports = (server) => {
     if (path === "/logout" && method === "POST") {
       ctx.session = null;
       ctx.body = "logout success";
+    } else {
+      await next();
+    }
+  });
+
+  server.use(async (ctx, next) => {
+    const { path, method } = ctx;
+    if (path === "/prepare-auth" && method === "GET") {
+      const url = ctx.query.url;
+      ctx.session.urlBeforeOAuth = url;
+      ctx.body = "ready";
     } else {
       await next();
     }

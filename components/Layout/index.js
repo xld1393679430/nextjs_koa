@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import { Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from "antd";
 import getConfig from "next/config";
 import { connect } from "react-redux";
+import { withRouter } from "next/router";
+import axios from "axios";
 import Container from "../Container";
 import { logout } from "../../store";
 
@@ -15,7 +17,7 @@ const githubIconStyle = {
   marginRight: 20,
 };
 
-const Index = ({ children, user, logout }) => {
+const Index = ({ children, user, logout, router }) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleChangeSearch = useCallback((e) => {
@@ -25,8 +27,17 @@ const Index = ({ children, user, logout }) => {
   const handleSubmit = useCallback(() => {}, []);
 
   const handleLogout = useCallback(async () => {
-    logout()
-  }, []);
+    logout();
+  }, [logout]);
+
+  const handleOAuth = useCallback((event) => {
+    event.preventDefault();
+    axios.get(`/prepare-auth?url=${router.asPath}`).then((res) => {
+      if (res.status === 200) {
+        location.href = publicRuntimeConfig.OAUTH_URL;
+      }
+    });
+  }, [router]);
 
   return (
     <Layout>
@@ -59,7 +70,7 @@ const Index = ({ children, user, logout }) => {
                 </Dropdown>
               ) : (
                 <Tooltip title="点击登录">
-                  <a href={publicRuntimeConfig.OAUTH_URL}>
+                  <a href="javascript:void(0)" onClick={handleOAuth}>
                     <Avatar size={40} icon="user" />
                   </a>
                 </Tooltip>
@@ -115,4 +126,4 @@ function mapDispatchToProps(dispatch) {
     logout: () => dispatch(logout()),
   };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Index));

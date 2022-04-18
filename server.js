@@ -5,6 +5,7 @@ const session = require("koa-session");
 const Redis = require("ioredis");
 const RedisSessionStore = require("./server/session-store");
 const auth = require("./server/auth");
+const api = require("./server/api");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -25,6 +26,9 @@ app.prepare().then(() => {
 
   // 配置处理GitHub oauth登录
   auth(server);
+
+  // 调用GitHub接口相关的服务
+  api(server);
 
   // 解决路由映射刷新页面404的问题
   router.get("/next-demo/detail/:id", async (ctx) => {

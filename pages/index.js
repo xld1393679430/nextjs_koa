@@ -1,7 +1,7 @@
 import Link from "next/link";
 import getConfig from "next/config";
 import { useEffect } from "react";
-import axios from "axios";
+const api = require("../lib/api");
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -31,7 +31,7 @@ const IndexDemo = () => {
   );
 };
 
-const Index = () => {
+const Index = ({ data }) => {
   return (
     <div>
       <p>Index</p>
@@ -40,6 +40,19 @@ const Index = () => {
       </Link>
     </div>
   );
+};
+
+Index.getInitialProps = async ({ ctx }) => {
+  let result = await api.request(
+    {
+      url: "/search/repositories?q=react",
+    },
+    ctx.req,
+    ctx.res
+  );
+  return {
+    data: result.data,
+  };
 };
 
 export default Index;

@@ -1,7 +1,6 @@
 import App, { Container } from "next/app";
 import { Provider } from "react-redux";
 import Router from "next/router";
-import axios from 'axios'
 import "antd/dist/antd.css";
 import withRedux from "../lib/with-redux";
 import Layout from "../components/Layout";
@@ -41,10 +40,6 @@ class MyApp extends App {
     Router.events.on("routeChangeStart", this.startLoading);
     Router.events.on("routeChangeComplete", this.stopLoading);
     Router.events.on("routeChangeError", this.stopLoading);
-
-    axios.get('/github/search/repositories?q=react').then(res => {
-      console.log(res, 'q=react')
-    })
   }
 
   componentWillUnmount() {

@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from "antd";
 import getConfig from "next/config";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
+import Link from "next/link";
 import axios from "axios";
 import Container from "../Container";
 import { logout } from "../../store";
@@ -24,19 +25,29 @@ const Index = ({ children, user, logout, router }) => {
     setSearchValue(e.target.value);
   }, []);
 
-  const handleSubmit = useCallback(() => {}, []);
+  const handleSubmit = useCallback(() => {
+    router.push(`/search?query=${searchValue}`);
+  }, [searchValue]);
 
   const handleLogout = useCallback(async () => {
     logout();
   }, [logout]);
 
-  const handleOAuth = useCallback((event) => {
-    event.preventDefault();
-    axios.get(`/prepare-auth?url=${router.asPath}`).then((res) => {
-      if (res.status === 200) {
-        location.href = publicRuntimeConfig.OAUTH_URL;
-      }
-    });
+  const handleOAuth = useCallback(
+    (event) => {
+      event.preventDefault();
+      axios.get(`/prepare-auth?url=${router.asPath}`).then((res) => {
+        if (res.status === 200) {
+          location.href = publicRuntimeConfig.OAUTH_URL;
+        }
+      });
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    const query = router.query && router.query.query;
+    setSearchValue(query || "");
   }, [router]);
 
   return (
@@ -45,11 +56,15 @@ const Index = ({ children, user, logout, router }) => {
         <Container renderer={<div className="header-inner" />}>
           <div className="header-left">
             <div className="logo">
-              <Icon type="github" style={githubIconStyle}></Icon>
+              <Link href="/">
+                <a>
+                  <Icon type="github" style={githubIconStyle}></Icon>
+                </a>
+              </Link>
             </div>
             <div>
               <Input.Search
-                placeholder="搜索参考"
+                placeholder="搜索"
                 value={searchValue}
                 onChange={handleChangeSearch}
                 onSearch={handleSubmit}
@@ -104,11 +119,14 @@ const Index = ({ children, user, logout, router }) => {
           height: 100%;
         }
         .ant-layout {
-          height: 100%;
+          min-height: 100%;
         }
         .ant-layout-header {
           padding-left: 0;
           padding-right: 0;
+        }
+        .ant-layout-content {
+          background-color: #fff;
         }
       `}</style>
     </Layout>

@@ -3,6 +3,7 @@ const Router = require("koa-router");
 const next = require("next");
 const session = require("koa-session");
 const Redis = require("ioredis");
+const koaBody = require('koa-body')
 const RedisSessionStore = require("./server/session-store");
 const auth = require("./server/auth");
 const api = require("./server/api");
@@ -17,6 +18,10 @@ app.prepare().then(() => {
   const router = new Router();
 
   server.keys = ["xld develop GitHub App"];
+
+  // 使用koa-body获取post请求的数据
+  server.use(koaBody())
+
   const SESSION_CONFIG = {
     key: "jid",
     store: new RedisSessionStore(redis),

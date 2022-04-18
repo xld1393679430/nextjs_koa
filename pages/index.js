@@ -1,5 +1,6 @@
 import Link from "next/link";
 import getConfig from "next/config";
+import axios from "axios";
 import { useEffect } from "react";
 const api = require("../lib/api");
 
@@ -32,6 +33,13 @@ const IndexDemo = () => {
 };
 
 const Index = ({ data }) => {
+  useEffect(() => {
+    axios.post("/github/test", {
+      a: 1,
+      b: 2,
+    });
+  }, []);
+
   return (
     <div>
       <p>Index</p>

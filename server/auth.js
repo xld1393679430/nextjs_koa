@@ -65,7 +65,7 @@ module.exports = (server) => {
     if (path === "/prepare-auth" && method === "GET") {
       const url = ctx.query.url;
       ctx.session.urlBeforeOAuth = url;
-      ctx.body = "ready";
+      ctx.redirect(config.OAUTH_URL)
     } else {
       await next();
     }

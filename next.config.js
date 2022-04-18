@@ -53,12 +53,9 @@ if (typeof require !== undefined) {
 }
 // 配置nextjs支持css --end--
 
-const GITHUB_OAUTG_URL = "https://github.com/login/oauth/authorize";
-const SCOPE = "user";
-
 module.exports = withCss({
   publicRuntimeConfig: {
-    GITHUB_OAUTG_URL,
-    OAUTH_URL: `${GITHUB_OAUTG_URL}?client_id=${config.github.client_id}&scope=${SCOPE}`,
+    GITHUB_OAUTG_URL: config.GITHUB_OAUTG_URL,
+    OAUTH_URL: config.OAUTH_URL,
   },
 });

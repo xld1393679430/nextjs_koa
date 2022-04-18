@@ -70,7 +70,7 @@ const Index = ({ children, user, logout, router }) => {
                 </Dropdown>
               ) : (
                 <Tooltip title="点击登录">
-                  <a href="javascript:void(0)" onClick={handleOAuth}>
+                  <a href={`/prepare-auth?url=${router.asPath}`}>
                     <Avatar size={40} icon="user" />
                   </a>
                 </Tooltip>

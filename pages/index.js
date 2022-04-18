@@ -1,7 +1,7 @@
 import Link from "next/link";
 import getConfig from "next/config";
 import axios from "axios";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Button, Icon, Tabs } from "antd";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
@@ -46,11 +46,10 @@ const IndexDemo = () => {
 
 const Index = ({ userRepos, userStarred, user, router }) => {
   const tabKey = router.query.key || "1";
-  console.log(userRepos, userStarred, user, "Index---");
 
-  const handleCahngeTab = (activeKey) => {
+  const handleChangeTab = useCallback((activeKey) => {
     router.replace(`/?key=${activeKey}`);
-  };
+  }, [router]);
 
   useEffect(() => {
     if (!isServer) {
@@ -99,7 +98,7 @@ const Index = ({ userRepos, userStarred, user, router }) => {
         <Tabs
           defaultActiveKey={tabKey}
           animated={false}
-          onChange={handleCahngeTab}
+          onChange={handleChangeTab}
         >
           <Tabs.TabPane tab="你的仓库" key="1">
             {userRepos.map((repo) => (

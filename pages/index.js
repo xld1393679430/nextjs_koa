@@ -5,14 +5,18 @@ import { useEffect } from "react";
 import { Button, Icon, Tabs } from "antd";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
+import LRU from "lru-cache";
 import Repo from "../components/Repo";
 const api = require("../lib/api");
 const { isServer } = require("../utils");
 
 const { publicRuntimeConfig } = getConfig();
 
-// 服务端渲染不能缓存cachedUserRepos & cachedUserStarred
-let cachedUserRepos, cachedUserStarred;
+// 10分钟内没有使用过cache数据就会删除
+// 没有使用过是指没有调用过cache.get()方法
+const cache = new LRU({
+  maxAge: 1000 * 60 * 10,
+});
 
 const IndexDemo = () => {
   useEffect(() => {
@@ -50,10 +54,14 @@ const Index = ({ userRepos, userStarred, user, router }) => {
 
   useEffect(() => {
     if (!isServer) {
-      cachedUserRepos = userRepos;
-      cachedUserStarred = userStarred;
+      if (userRepos) {
+        cache.set("userRepos", userRepos);
+      }
+      if (userStarred) {
+        cache.set("userStarred", userStarred);
+      }
     }
-  }, []);
+  }, [userRepos, userStarred]);
 
   if (!user || !user.id) {
     return (
@@ -150,10 +158,10 @@ Index.getInitialProps = async ({ ctx, reduxStore }) => {
   }
 
   if (!isServer) {
-    if (cachedUserRepos && cachedUserStarred) {
+    if (cache.get("userRepos") && cache.get("userStarred")) {
       return {
-        userRepos: cachedUserRepos,
-        userStarred: cachedUserStarred,
+        userRepos: cache.get("userRepos"),
+        userStarred: cache.get("userStarred"),
       };
     }
   }

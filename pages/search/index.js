@@ -114,13 +114,20 @@ const Index = ({ router, repos }) => {
           />
         </Col>
         <Col span={18}>
-          <h3 className="repos-title">{repos.total_count} 个仓库</h3>
-          {repos.items.map((repo) => {
-            return <Repo key={repo.id} repo={repo} />;
-          })}
+          <h3 className="repos-title">
+            <span>{repos.total_count} 个仓库</span>
+            {repos.total_count > 1000 ? (
+              <span>（ gitHub Api最多只支持1000条数据 ）</span>
+            ) : null}
+          </h3>
+          {repos.items &&
+            repos.items.map((repo) => {
+              return <Repo key={repo.id} repo={repo} />;
+            })}
+          {/* github api最多只支持1000条数据 */}
           <Pagination
-            total={repos.total_count}
-            pageSize={30}
+            total={repos.total_count > 1000 ? 1000 : repos.total_count}
+            pageSize={20}
             current={Number(page) || 1}
             onChange={noop}
             itemRender={(page, type, ol) => {
@@ -182,6 +189,7 @@ Index.getInitialProps = async ({ ctx }) => {
     language: lang || undefined,
     order: order || "desc",
     page: page || 1,
+    per_page: 20,
   };
   const queryStr = queryString.stringify(queryObj);
 

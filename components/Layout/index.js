@@ -1,5 +1,14 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Layout, Icon, Input, Avatar, Tooltip, Dropdown, Menu } from "antd";
+import {
+  Layout,
+  Icon,
+  Input,
+  Avatar,
+  Tooltip,
+  Dropdown,
+  Menu,
+  message,
+} from "antd";
 import getConfig from "next/config";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
@@ -26,6 +35,10 @@ const Index = ({ children, user, logout, router }) => {
   }, []);
 
   const handleSubmit = useCallback(() => {
+    if (!searchValue) {
+      message.error("请输入搜索内容");
+      return;
+    }
     router.push(`/search?query=${searchValue}`);
   }, [searchValue]);
 

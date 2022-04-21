@@ -1,13 +1,9 @@
 import Link from "next/link";
 import { Icon } from "antd";
-import moment from "moment";
 
+const { getLastUpdated } = require('../../utils')
 function getLicense(license) {
   return license ? `${license.spdx_id} license` : "";
-}
-
-function getLastUpdated(time) {
-  return moment(time).fromNow();
 }
 
 const Index = ({ repo }) => {

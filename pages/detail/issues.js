@@ -1,4 +1,3 @@
-import { Tabs } from "antd";
 import WithRepoBasic from "../../components/WithRepoBasic";
 
 const Index = () => {

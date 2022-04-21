@@ -3,7 +3,8 @@ const Router = require("koa-router");
 const next = require("next");
 const session = require("koa-session");
 const Redis = require("ioredis");
-const koaBody = require('koa-body')
+const koaBody = require("koa-body");
+const atob = require("atob");
 const RedisSessionStore = require("./server/session-store");
 const auth = require("./server/auth");
 const api = require("./server/api");
@@ -13,6 +14,9 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const redis = new Redis();
 
+// 设置nodejs全局增加一个变量atob
+global.atob = atob;
+
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
@@ -20,7 +24,7 @@ app.prepare().then(() => {
   server.keys = ["xld develop GitHub App"];
 
   // 使用koa-body获取post请求的数据
-  server.use(koaBody())
+  server.use(koaBody());
 
   const SESSION_CONFIG = {
     key: "jid",

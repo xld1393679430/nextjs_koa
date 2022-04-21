@@ -1,18 +1,29 @@
-import { Tabs } from "antd";
 import WithRepoBasic from "../../components/WithRepoBasic";
+const api = require("../../lib/api");
 
-const Index = ({ text }) => {
+const Index = ({ readme }) => {
+  console.log(readme, 'readme----')
   return (
     <div>
-      <p>Detail - { text }</p>
+      <p>Detail</p>
+      <span>{atob(readme.content)}</span>
     </div>
   );
 };
 
 Index.getInitialProps = async ({ router, ctx }) => {
-  return {
-    text: 123
-  }
-}
+  const { owner, name } = ctx.query;
+  const readmeResp = await api.request(
+    {
+      url: `/repos/${owner}/${name}/readme`,
+    },
+    ctx.req,
+    ctx.res
+  );
 
-export default WithRepoBasic(Index, 'index');
+  return {
+    readme: readmeResp.data,
+  };
+};
+
+export default WithRepoBasic(Index, "index");

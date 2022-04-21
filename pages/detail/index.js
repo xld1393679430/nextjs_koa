@@ -1,14 +1,9 @@
 import WithRepoBasic from "../../components/WithRepoBasic";
+import MarkdownRender from "../../components/MarkdownRender";
 const api = require("../../lib/api");
 
 const Index = ({ readme }) => {
-  console.log(readme, 'readme----')
-  return (
-    <div>
-      <p>Detail</p>
-      <span>{atob(readme.content)}</span>
-    </div>
-  );
+  return <MarkdownRender content={readme.content} isBase64={true} />;
 };
 
 Index.getInitialProps = async ({ router, ctx }) => {

@@ -1,4 +1,4 @@
-import moment from "moment";
+const moment = require("moment");
 const isServer = typeof window === "undefined";
 const github_base_url = "https://api.github.com";
 

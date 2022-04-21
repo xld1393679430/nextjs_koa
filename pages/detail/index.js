@@ -1,11 +1,18 @@
-const Index = () => <div>Detail Page</div>;
+import { Tabs } from "antd";
+import WithRepoBasic from "../../components/WithRepoBasic";
 
-Index.getInitialProps = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({});
-    }, 1500);
-  });
+const Index = ({ text }) => {
+  return (
+    <div>
+      <p>Detail - { text }</p>
+    </div>
+  );
 };
 
-export default Index;
+Index.getInitialProps = async ({ router, ctx }) => {
+  return {
+    text: 123
+  }
+}
+
+export default WithRepoBasic(Index, 'index');

@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import LRU from "lru-cache";
 import Repo from "../components/Repo";
+import { setCacheArray } from "../lib/repo-basic-cache";
 const api = require("../lib/api");
 const { isServer } = require("../utils");
 
@@ -47,9 +48,12 @@ const IndexDemo = () => {
 const Index = ({ userRepos, userStarred, user, router }) => {
   const tabKey = router.query.key || "1";
 
-  const handleChangeTab = useCallback((activeKey) => {
-    router.replace(`/?key=${activeKey}`);
-  }, [router]);
+  const handleChangeTab = useCallback(
+    (activeKey) => {
+      router.replace(`/?key=${activeKey}`);
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (!isServer) {
@@ -59,6 +63,14 @@ const Index = ({ userRepos, userStarred, user, router }) => {
       if (userStarred) {
         cache.set("userStarred", userStarred);
       }
+    }
+  }, [userRepos, userStarred]);
+
+  useEffect(() => {
+    // 只有在客户端才增新的cache
+    if (!isServer) {
+      setCacheArray(userRepos);
+      setCacheArray(userStarred);
     }
   }, [userRepos, userStarred]);
 

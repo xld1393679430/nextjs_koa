@@ -1,10 +1,12 @@
-import { memo, isValidElement } from "react";
+import { memo, isValidElement, useEffect } from "react";
 import { withRouter } from "next/router";
 import queryString from "query-string";
 import { Row, Col, List, Pagination } from "antd";
 import Link from "next/link";
 import Repo from "../../components/Repo";
+import { setCacheArray } from '../../lib/repo-basic-cache'
 const api = require("../../lib/api");
+const { isServer } = require('../../utils')
 
 function noop() {}
 const LANGUAGES = ["Javascript", "HTML", "CSS", "TypeScript", "Java", "Rust"];
@@ -59,7 +61,13 @@ const FilterLink = memo(({ name, query, lang, sort, order, page }) => {
 const Index = ({ router, repos }) => {
   const { ...querys } = router.query;
   const { lang, sort, order, page } = router.query;
-  console.log(repos.total_count, "----repos");
+
+  useEffect(() => {
+    // 只有客户端渲染才需要缓存 防止增加服务端内存
+    if(!isServer) {
+      setCacheArray(repos.items)
+    }
+  }, [repos])
 
   return (
     <div className="root">

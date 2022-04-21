@@ -67,6 +67,6 @@ app.prepare().then(() => {
   });
 
   server.listen(3000, () => {
-    console.log("Koa server start on 3000");
+    // console.log("Koa server start on 3000");
   });
 });

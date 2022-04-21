@@ -1,4 +1,6 @@
+const webpack = require("webpack");
 const withCss = require("@zeit/next-css");
+const withBundleAnalyzer = require("@zeit/next-bundle-analyzer");
 const config = require("./config");
 
 const nextBaseconfig = {
@@ -53,9 +55,31 @@ if (typeof require !== undefined) {
 }
 // 配置nextjs支持css --end--
 
-module.exports = withCss({
-  publicRuntimeConfig: {
-    GITHUB_OAUTG_URL: config.GITHUB_OAUTG_URL,
-    OAUTH_URL: config.OAUTH_URL,
-  },
-});
+module.exports = withBundleAnalyzer(
+  withCss({
+    webpack(config) {
+      config.plugins.push(
+        // 忽略moment依赖包下的locale（多语言）
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+      )
+
+      return config
+    },
+    publicRuntimeConfig: {
+      GITHUB_OAUTG_URL: config.GITHUB_OAUTG_URL,
+      OAUTH_URL: config.OAUTH_URL,
+    },
+    // 使用webpack analyzer插件分析打包出来的js
+    analyzeBrowser: ["browser", "both"].includes(process.env.BUNDLE_ANALYZE),
+    bundleAnalyzerConfig: {
+      server: {
+        analyzerMode: "static",
+        reportFilename: "../bundles/server.html",
+      },
+      browser: {
+        analyzerMode: "static",
+        reportFilename: "../bundles/client.html",
+      },
+    },
+  })
+);

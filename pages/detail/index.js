@@ -1,5 +1,12 @@
+import dynamic from "next/dynamic";
 import WithRepoBasic from "../../components/WithRepoBasic";
-import MarkdownRender from "../../components/MarkdownRender";
+
+const MarkdownRender = dynamic(
+  () => import("../../components/MarkdownRender"),
+  {
+    loading: () => <span>loading...</span>,
+  }
+);
 const api = require("../../lib/api");
 
 const Index = ({ readme }) => {
